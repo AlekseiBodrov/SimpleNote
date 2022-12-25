@@ -11,6 +11,7 @@ final class NoteTableViewCell: UITableViewCell {
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var stackView: UIStackView!
 
+    
     //MARK: - flow funcs
     func configure(with item: Item){
         configureIcon(with: item.icon)
