@@ -8,7 +8,7 @@ extension UIButton {
         self.setTitle("", for: UIControl.State.normal)
         self.setImage(UIImage(named: nameImage), for: .normal)
         self.tintColor = .black
-        self.backgroundColor = .lightOrange
+        self.setBackgroundImage(UIImage(named: nameImage), for: .normal)
         self.layer.cornerRadius = 10
         self.layer.borderWidth = 1
 
