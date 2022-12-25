@@ -12,8 +12,8 @@ class Item: Object {
 extension Item {
     func prepareForFirstUse() -> Item {
         let item = Item()
-        item.title = "Новая заметка"
-        item.content = "Дополнительный текст"
+        item.title = "New Note".lacolized()
+        item.content = "Additional text".lacolized()
         let date = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm dd.MM.yy"
