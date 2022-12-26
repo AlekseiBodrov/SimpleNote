@@ -5,7 +5,7 @@ final class RealmManager {
     static let shared = RealmManager()
 
     //MARK: - let/var
-    private let realm = try! Realm()
+    private lazy var realm = try! Realm()
 
     //MARK: - life cycle funcs
     private init(){}
@@ -17,14 +17,22 @@ final class RealmManager {
     }
 
     func saveItem(with item: Item) {
-        try! realm.write {
-            realm.add(item)
+        do {
+            try realm.write {
+                realm.add(item)
+            }
+        } catch let error {
+            print(error)
         }
     }
 
     func deletItem(with item: Item) {
-        try! realm.write {
-            realm.delete(item)
+        do {
+            try realm.write {
+                realm.delete(item)
+            }
+        } catch let error {
+            print(error)
         }
     }
 }

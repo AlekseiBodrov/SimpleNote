@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5Ox-oT-sDs">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -30,7 +31,14 @@
                             <constraint firstItem="zTy-YH-Xjy" firstAttribute="leading" secondItem="W8K-Iz-6wW" secondAttribute="leading" id="xBQ-Ks-aE6"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="IKZ-Jj-36S"/>
+                    <navigationItem key="navigationItem" id="IKZ-Jj-36S">
+                        <barButtonItem key="rightBarButtonItem" image="square.and.pencil" catalog="system" id="p6f-OD-hUB">
+                            <color key="tintColor" systemColor="systemGreenColor"/>
+                            <connections>
+                                <action selector="rightBarButtonPressed:" destination="cdA-nJ-iYn" id="irT-nr-K5g"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="listOfNotesTableView" destination="zTy-YH-Xjy" id="eAI-TF-4ux"/>
                     </connections>
@@ -65,6 +73,19 @@
                             <constraint firstAttribute="bottom" secondItem="myz-pt-2zd" secondAttribute="bottom" id="y5J-wZ-y7w"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="eCB-Eq-H3b">
+                        <barButtonItem key="backBarButtonItem" id="cyY-bG-tLh"/>
+                        <barButtonItem key="rightBarButtonItem" id="Qs4-Lt-DbO">
+                            <connections>
+                                <action selector="rigthBarButtonPressed:" destination="rfN-Qt-VCZ" id="o7u-tS-exS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="backBarButton" destination="cyY-bG-tLh" id="S77-oq-9IB"/>
+                        <outlet property="rightBarButton" destination="Qs4-Lt-DbO" id="pax-9G-YWa"/>
+                        <outlet property="textView" destination="myz-pt-2zd" id="fIU-PT-HaA"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3an-vd-uak" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -90,11 +111,15 @@
         </scene>
     </scenes>
     <resources>
+        <image name="square.and.pencil" catalog="system" width="128" height="113"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

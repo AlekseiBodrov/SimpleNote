@@ -19,6 +19,7 @@ final class NoteTableViewCell: UITableViewCell {
         configureContentLabel(with: item.content)
         configureDateLabel(with: item.date)
         configureStackView()
+        configurContentView()
     }
 
     func configureIcon(with name: String) {
@@ -40,8 +41,12 @@ final class NoteTableViewCell: UITableViewCell {
 
     func configureStackView() {
         stackView.rounded(radius: 5)
-        stackView.layer.borderWidth = 1
-        stackView.layer.borderColor = UIColor.orange2.cgColor
-        stackView.backgroundColor = .lightOrange
+        stackView.layer.borderWidth = 0.3
+        stackView.layer.borderColor = UIColor.white.cgColor
+        stackView.backgroundColor = .gray
+    }
+
+    func configurContentView() {
+        contentView.backgroundColor = .darkGray
     }
 }
