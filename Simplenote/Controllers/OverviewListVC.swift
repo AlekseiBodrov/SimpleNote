@@ -26,6 +26,7 @@ import UIKit
 
           RealmManager.shared.saveItem(with: item)
           createViewController()
+          listOfNotesTableView.reloadData()
       }
 
      //MARK: - flow funcs
@@ -54,16 +55,19 @@ import UIKit
  //MARK: - extension TableView Delegate, DataSource
  extension OverviewListVC: UITableViewDelegate, UITableViewDataSource {
 
-     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-         tableView.deselectRow(at: indexPath, animated: true)
-         createViewController()
-     }
-
-     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-         if editingStyle == .delete {
+     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+         let title = "Delete".lacolized()
+         let actionDelete = UIContextualAction(style: .destructive, title: title) { [self] _, _, _ in
              RealmManager.shared.deletItem(with: notesArray[indexPath.row])
              listOfNotesTableView.deleteRows(at: [indexPath], with: .automatic)
          }
+         let actions = UISwipeActionsConfiguration(actions: [actionDelete])
+         return actions
+     }
+
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+         tableView.deselectRow(at: indexPath, animated: true)
+         createViewController()
      }
 
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -82,9 +86,3 @@ import UIKit
          return cell
      }
  }
-
-//extension OverviewListViewController: EditingVС {
-//    func setting() {
-//
-//    }
-//}
