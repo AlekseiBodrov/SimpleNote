@@ -4,6 +4,9 @@ class EditingVC: UIViewController {
     //MARK: - static let
     static let identifier = "EditingVC"
 
+    var indexPath: IndexPath?
+    var isOldNote = false
+
     //MARK: - IBOutlet
     @IBOutlet weak var textView: UITextView!
 
@@ -13,11 +16,13 @@ class EditingVC: UIViewController {
     //MARK: - life cycle funcs
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configure()
         configureBarButtons()
         registerNotificationCenter()
         registerRecognizer(with: .up)
         registerRecognizer(with: .down)
+
+//        getTextForNote()
     }
 
     deinit {
@@ -32,12 +37,74 @@ class EditingVC: UIViewController {
 
     //MARK: - flow funcs
 
-    private func configureBarButtons() {
+    func getTextForNote(note: Item) {
+        print(#function)
+        if isOldNote, indexPath != nil {
+//            let note = note
+//            textView.attributedText = note.content
+        } else {
+            textView.text = ""
+            addAttributesInTextView()
+        }
+    }
+
+    func addAttributesInTextView() {
+        print(#function)
+        let textStorage = textView.textStorage
+
+        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
+        let boldFontDescriptor = fontDescriptor.withSymbolicTraits(.traitBold)
+
+        let boldFont = UIFont(descriptor: boldFontDescriptor!, size: 24)
+        let normalFont = UIFont(descriptor: fontDescriptor, size: 20)
+
+        //Нужно для определения длинны первого параграфа и остальных параграфов
+        let firstParagraph = textStorage.mutableString.paragraphRange(for: NSRange(location: 0, length: 0))
+        let otherParagraphs = NSString(string: getNoteContent(text: textView.text))
+
+        let titleNoteParagraphStyle = NSMutableParagraphStyle()
+        let contentNoteParagraphsStyle = NSMutableParagraphStyle()
+
+        //Атрибуты заголовка заметки (Первый абзац)
+        textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: titleNoteParagraphStyle, range: firstParagraph)
+        textStorage.addAttribute(NSAttributedString.Key.font, value: boldFont, range: firstParagraph)
+
+        //Атрибуты содержания заметки (Текст начиная со второго абзаца)
+        if textView.text.contains("\n") {
+            textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: contentNoteParagraphsStyle, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
+            textStorage.addAttribute(NSAttributedString.Key.font, value: normalFont, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
+        }
+    }
+
+    private func getNoteContent(text: String) -> String {
+        print(#function)
+        var contentNote: String
+        if let endIndexOfFirstParagraph = text.firstIndex(of: "\n") {
+            let firstIndexOfContent = text.index(endIndexOfFirstParagraph, offsetBy: 1)
+            contentNote = String(text[firstIndexOfContent...])
+        } else {
+            contentNote = ""
+        }
+        return contentNote
+    }
+
+}
+
+
+private extension EditingVC {
+
+    func configure() {
+        view.backgroundColor = .darkGray
+        textView.backgroundColor = .darkGray
+        textView.textColor = .white
+    }
+
+    func configureBarButtons() {
         rightBarButton.title = "Done".lacolized()
         backBarButton.title = "Back".lacolized()
     }
 
-    private func registerRecognizer(with direction: UISwipeGestureRecognizer.Direction) {
+    func registerRecognizer(with direction: UISwipeGestureRecognizer.Direction) {
         let downSwipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeRecognizerDetected))
         downSwipeRecognizer.direction = direction
         textView.addGestureRecognizer(downSwipeRecognizer)
@@ -47,7 +114,7 @@ class EditingVC: UIViewController {
         self.textView.resignFirstResponder()
     }
 
-    private func registerNotificationCenter () {
+    func registerNotificationCenter () {
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: UIResponder.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateTextView), name: UIResponder.keyboardWillHideNotification, object: nil)
     }

@@ -11,13 +11,16 @@ final class NoteTableViewCell: UITableViewCell {
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var stackView: UIStackView!
 
+    //         cell.titileLabel.text = getNoteTitle(text: note.content!)
+    //         cell.contentLabel.text = getNoteContent(text: note.content!)
+    //         cell.dateLabel.text = note.date
     
     //MARK: - flow funcs
     func configure(with item: Item){
-        configureIcon(with: item.icon)
-        configureTitileLabel(with: item.title)
-        configureContentLabel(with: item.content)
-        configureDateLabel(with: item.date)
+//        configureIcon(with: item.icon)
+//        configureTitileLabel(with: item.title)
+//        configureContentLabel(with: item.content)
+        configureDateLabel(with: item.date ?? "")
         configureStackView()
         configurContentView()
     }
@@ -37,6 +40,7 @@ final class NoteTableViewCell: UITableViewCell {
 
     func configureDateLabel(with text: String) {
         dateLabel.text = text
+        dateLabel.textColor = .white
     }
 
     func configureStackView() {

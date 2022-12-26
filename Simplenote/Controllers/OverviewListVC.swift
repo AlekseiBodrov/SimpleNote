@@ -17,7 +17,13 @@ import UIKit
      //MARK: - life cycle funcs
      override func viewDidLoad() {
          super.viewDidLoad()
+         print(Realm.Configuration.defaultConfiguration.fileURL!)
          configure()
+     }
+
+     override func viewWillAppear(_ animated: Bool) {
+         super.viewWillAppear(animated)
+         listOfNotesTableView.reloadData()
      }
 
      //MARK: - IBOutlet
@@ -25,49 +31,20 @@ import UIKit
           let item = Item().prepareForFirstUse()
 
           RealmManager.shared.saveItem(with: item)
-          createViewController()
-          listOfNotesTableView.reloadData()
+          createViewController(with: nil)
       }
-
-     //MARK: - flow funcs
-     private func configure() {
-         if notesArray.isEmpty {
-             RealmManager.shared.saveItem(with: firstNote)
-         }
-
-         view.backgroundColor = .darkGray
-
-         listOfNotesTableView.separatorColor = .darkGray
-         listOfNotesTableView.backgroundColor = .darkGray
-         listOfNotesTableView.delegate = self
-         listOfNotesTableView.dataSource = self
-         let nib = UINib(nibName: NoteTableViewCell.identifier, bundle: nil)
-         listOfNotesTableView.register(nib, forCellReuseIdentifier: NoteTableViewCell.identifier)
-     }
-
-     func createViewController() {
-         guard let controller = self.storyboard?.instantiateViewController(withIdentifier: EditingVC.identifier) as? EditingVC else { return }
-         self.navigationController?.pushViewController(controller, animated: true)
-     }
-
  }
 
  //MARK: - extension TableView Delegate, DataSource
  extension OverviewListVC: UITableViewDelegate, UITableViewDataSource {
 
      func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-         let title = "Delete".lacolized()
-         let actionDelete = UIContextualAction(style: .destructive, title: title) { [self] _, _, _ in
-             RealmManager.shared.deletItem(with: notesArray[indexPath.row])
-             listOfNotesTableView.deleteRows(at: [indexPath], with: .automatic)
-         }
-         let actions = UISwipeActionsConfiguration(actions: [actionDelete])
-         return actions
+         deleteCell(indexPath: indexPath)
      }
 
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          tableView.deselectRow(at: indexPath, animated: true)
-         createViewController()
+         createViewController(with: indexPath)
      }
 
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -79,10 +56,48 @@ import UIKit
      }
 
      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-         guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteTableViewCell.identifier, for: indexPath) as? NoteTableViewCell else { return UITableViewCell() }
-
-         cell.configure(with: notesArray[indexPath.row])
-         return cell
+         return createCell(tableView, for: indexPath)
      }
  }
+
+private extension OverviewListVC {
+    //MARK: - flow funcs
+    func configure() {
+        if notesArray.isEmpty {
+            RealmManager.shared.saveItem(with: firstNote)
+        }
+
+        view.backgroundColor = .darkGray
+
+        listOfNotesTableView.separatorColor = .darkGray
+        listOfNotesTableView.backgroundColor = .darkGray
+        listOfNotesTableView.delegate = self
+        listOfNotesTableView.dataSource = self
+        let nib = UINib(nibName: NoteTableViewCell.identifier, bundle: nil)
+        listOfNotesTableView.register(nib, forCellReuseIdentifier: NoteTableViewCell.identifier)
+    }
+
+    func createViewController(with indexPath: IndexPath?) {
+        guard let controller = self.storyboard?.instantiateViewController(withIdentifier: EditingVC.identifier) as? EditingVC else { return }
+        controller.indexPath = indexPath
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+
+    func createCell(_ tableView: UITableView, for indexPath: IndexPath) -> UITableViewCell {
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteTableViewCell.identifier, for: indexPath) as? NoteTableViewCell else { return UITableViewCell() }
+
+        cell.configure(with: notesArray[indexPath.row])
+        return cell
+    }
+
+    func deleteCell(indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let title = "Delete".lacolized()
+        let actionDelete = UIContextualAction(style: .destructive, title: title) { [self] _, _, _ in
+            RealmManager.shared.deletItem(with: notesArray[indexPath.row])
+            listOfNotesTableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        let actions = UISwipeActionsConfiguration(actions: [actionDelete])
+        return actions
+    }
+}
