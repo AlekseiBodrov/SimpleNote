@@ -42,7 +42,6 @@ class EditingVC: UIViewController {
         if titleNote != "" || contentNote != "" {
             saveData()
         }
-
     }
 
     deinit {
@@ -66,38 +65,30 @@ class EditingVC: UIViewController {
         } else {
             configureTextView(with: Frase.newNote.rawValue.lacolized(), color: .lightGray)
             titleTextField.placeholder = Frase.header.rawValue.lacolized()
-//            addAttributesInTextView()
         }
     }
 
     private func saveData(){
 
-        if indexPath == nil {
-            let note = Item()
-            note.title = titleNote
-            note.content = contentNote
-            let date = Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm dd:mm:yy"
-            note.date = formatter.string(from: date)
-
-            RealmManager.shared.saveItem(with: note)
-            delegate?.save()
-        } else {
+        if indexPath != nil {
             let notes = RealmManager.shared.fetchData()
             RealmManager.shared.deletItem(with: notes[indexPath!.row])
-            let note = Item()
-            note.title = titleNote
-            note.content = contentNote
-            let date = Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm dd:mm:yy"
-            note.date = formatter.string(from: date)
-            RealmManager.shared.saveItem(with: note)
-            delegate?.save()
         }
+
+        RealmManager.shared.saveItem(with: getNoteForSaving())
+        delegate?.save()
     }
 
+    private func getNoteForSaving() -> Item {
+        let note = Item()
+        note.title = titleNote
+        note.content = contentNote
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm dd.mm.yy"
+        note.date = formatter.string(from: date)
+        return note
+    }
 }
 
 //MARK: - TextViewDelegate
