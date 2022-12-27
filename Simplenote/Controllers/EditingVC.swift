@@ -1,6 +1,7 @@
 import UIKit
 import RealmSwift
 
+//MARK: - Delegate
 protocol EditingVCDelegate: AnyObject {
     func save()
 }
@@ -16,30 +17,35 @@ class EditingVC: UIViewController {
     weak var delegate: EditingVCDelegate?
 
     //MARK: - IBOutlet
+    @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var textView: UITextView!
 
     @IBOutlet weak var backBarButton: UIBarButtonItem!
     @IBOutlet weak var rightBarButton: UIBarButtonItem!
 
+    @IBAction func textFieldChanged(_ sender: UITextField) {
+        titleNote = titleTextField.text!
+    }
+
+
     //MARK: - life cycle funcs
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        configureBarButtons()
         registerNotificationCenter()
-        registerRecognizer(with: .up)
-        registerRecognizer(with: .down)
+        setRecognizer(with: .up)
+        setRecognizer(with: .down)
+    }
 
-        getTextForNote()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if titleNote != "" || contentNote != "" {
+            saveData()
+        }
+
     }
 
     deinit {
-
-        let note = Item()
-        note.content = contentNote
-        RealmManager.shared.saveItem(with: note)
-        delegate?.save()
-
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -55,69 +61,52 @@ class EditingVC: UIViewController {
         if let indexPath = self.indexPath {
             let notesArray: Results<Item> = RealmManager.shared.fetchData()
             let note = notesArray[indexPath.row]
-            configureText(with: note.content!)
+            configureTextView(with: note.content ?? "")
+            configureTextField(with: note.title ?? "")
         } else {
-            configureText(with: Frase.newNote.rawValue.lacolized(), color: .lightGray)
-            addAttributesInTextView()
+            configureTextView(with: Frase.newNote.rawValue.lacolized(), color: .lightGray)
+            titleTextField.placeholder = Frase.header.rawValue.lacolized()
+//            addAttributesInTextView()
         }
     }
 
-    func addAttributesInTextView() {
-        print(#function)
-        let textStorage = textView.textStorage
+    private func saveData(){
 
-        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
-        let boldFontDescriptor = fontDescriptor.withSymbolicTraits(.traitBold)
+        if indexPath == nil {
+            let note = Item()
+            note.title = titleNote
+            note.content = contentNote
+            let date = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm dd:mm:yy"
+            note.date = formatter.string(from: date)
 
-        let boldFont = UIFont(descriptor: boldFontDescriptor!, size: 24)
-        let normalFont = UIFont(descriptor: fontDescriptor, size: 20)
-
-        let firstParagraph = textStorage.mutableString.paragraphRange(for: NSRange(location: 0, length: 0))
-        let otherParagraphs = NSString(string: getNoteContent(text: textView.text))
-
-        let titleNoteParagraphStyle = NSMutableParagraphStyle()
-        let contentNoteParagraphsStyle = NSMutableParagraphStyle()
-
-        textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: titleNoteParagraphStyle, range: firstParagraph)
-        textStorage.addAttribute(NSAttributedString.Key.font, value: boldFont, range: firstParagraph)
-
-        if textView.text.contains("\n") {
-            textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: contentNoteParagraphsStyle, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
-            textStorage.addAttribute(NSAttributedString.Key.font, value: normalFont, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
-        }
-    }
-
-    private func getNoteTitle(text: String) -> String {
-        print(#function)
-        var firstParagraph: String
-        if let endIndexOfFirstParagraph = text.firstIndex(of: "\n") {
-            firstParagraph = String(text[..<endIndexOfFirstParagraph])
+            RealmManager.shared.saveItem(with: note)
+            delegate?.save()
         } else {
-            firstParagraph = text
+            let notes = RealmManager.shared.fetchData()
+            RealmManager.shared.deletItem(with: notes[indexPath!.row])
+            let note = Item()
+            note.title = titleNote
+            note.content = contentNote
+            let date = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm dd:mm:yy"
+            note.date = formatter.string(from: date)
+            RealmManager.shared.saveItem(with: note)
+            delegate?.save()
         }
-        return firstParagraph
-    }
-
-    private func getNoteContent(text: String) -> String {
-        print(#function)
-        var contentNote: String
-        if let endIndexOfFirstParagraph = text.firstIndex(of: "\n") {
-            let firstIndexOfContent = text.index(endIndexOfFirstParagraph, offsetBy: 1)
-            contentNote = String(text[firstIndexOfContent...])
-        } else {
-            contentNote = ""
-        }
-        return contentNote
     }
 
 }
 
+//MARK: - TextViewDelegate
 extension EditingVC: UITextViewDelegate {
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         print(#function)
         if contentNote.isEmpty {
-            configureText(with: "")
+            configureTextView(with: "")
         }
         return true
     }
@@ -127,10 +116,17 @@ extension EditingVC: UITextViewDelegate {
     }
 }
 
-
+//MARK: - private extension
 private extension EditingVC {
 
     func configure() {
+        getTextForNote()
+        configureBarButtons()
+
+        titleTextField.placeholder = titleNote
+        titleTextField.backgroundColor = .gray
+        titleTextField.textColor = .white
+
         view.backgroundColor = .darkGray
         textView.backgroundColor = .darkGray
         textView.textColor = .white
@@ -143,7 +139,7 @@ private extension EditingVC {
         backBarButton.title = Frase.back.rawValue.lacolized()
     }
 
-    func registerRecognizer(with direction: UISwipeGestureRecognizer.Direction) {
+    func setRecognizer(with direction: UISwipeGestureRecognizer.Direction) {
         let downSwipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeRecognizerDetected))
         downSwipeRecognizer.direction = direction
         textView.addGestureRecognizer(downSwipeRecognizer)
@@ -173,8 +169,12 @@ private extension EditingVC {
         textView.scrollRangeToVisible(textView.selectedRange)
     }
 
-    func configureText(with text: String, color: UIColor = UIColor.white) {
+    func configureTextView(with text: String, color: UIColor = UIColor.white) {
         textView.text = text
         textView.textColor = color
+    }
+
+    func configureTextField(with text: String, color: UIColor = UIColor.white) {
+        titleTextField.text = text
     }
 }

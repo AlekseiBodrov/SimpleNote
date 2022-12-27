@@ -8,8 +8,8 @@ import UIKit
          static let rowHeight: CGFloat = 60
      }
 
-     private let firstNote = Manager.firstNote
-     private var notesArray: Results<Item> = Manager.notesArray
+     private let firstNote = Manager.shared.firstNote
+     private var notesArray: Results<Item> = Manager.shared.notesArray
 
     //MARK: - IBOutlet
     @IBOutlet weak var listOfNotesTableView: UITableView!

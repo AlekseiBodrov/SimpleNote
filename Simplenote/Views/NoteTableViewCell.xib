@@ -91,7 +91,7 @@
                 <outlet property="dateLabel" destination="aQW-CS-Afs" id="8kx-xJ-fVQ"/>
                 <outlet property="icon" destination="SaG-h0-68f" id="CkC-Na-VMp"/>
                 <outlet property="stackView" destination="bto-8P-6oM" id="fE6-4c-bEs"/>
-                <outlet property="titileLabel" destination="SZr-O8-SUI" id="mI1-ch-oCD"/>
+                <outlet property="titleLabel" destination="SZr-O8-SUI" id="HK4-p5-FTU"/>
             </connections>
             <point key="canvasLocation" x="608.46153846153845" y="-27.72511848341232"/>
         </tableViewCell>

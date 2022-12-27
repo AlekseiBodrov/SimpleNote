@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		006B51EA68AB7B5728D60E8D /* Pods_Simplenote.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6FB3E5DC2B167EF28C7CD8 /* Pods_Simplenote.framework */; };
-		D742B9FD295ACA540060996F /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D742B9FC295ACA540060996F /* Manager.swift */; };
+		D742B9FD295ACA540060996F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D742B9FC295ACA540060996F /* AppManager.swift */; };
 		D75B67B729587C5D003A4E30 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D75B67B629587C5C003A4E30 /* NoteTableViewCell.xib */; };
 		D75B67B9295892D8003A4E30 /* EditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75B67B8295892D8003A4E30 /* EditingVC.swift */; };
 		D7CE8A3A29587B5F00E9BA74 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CE8A3929587B5F00E9BA74 /* RealmManager.swift */; };
@@ -32,7 +32,7 @@
 		355015C3CCEA5457C9C0D101 /* Pods-Simplenote.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Simplenote.release.xcconfig"; path = "Target Support Files/Pods-Simplenote/Pods-Simplenote.release.xcconfig"; sourceTree = "<group>"; };
 		6F6FB3E5DC2B167EF28C7CD8 /* Pods_Simplenote.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Simplenote.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		987310FB78E91DF38B432DA3 /* Pods-Simplenote.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Simplenote.debug.xcconfig"; path = "Target Support Files/Pods-Simplenote/Pods-Simplenote.debug.xcconfig"; sourceTree = "<group>"; };
-		D742B9FC295ACA540060996F /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		D742B9FC295ACA540060996F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		D75B67B629587C5C003A4E30 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
 		D75B67B8295892D8003A4E30 /* EditingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingVC.swift; sourceTree = "<group>"; };
 		D7CE8A3929587B5F00E9BA74 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
@@ -84,11 +84,18 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		D787FFB9295AF39F00F3B94C /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				D742B9FC295ACA540060996F /* AppManager.swift */,
+				D7CE8A3929587B5F00E9BA74 /* RealmManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		D7CE8A3729587B4500E9BA74 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				D742B9FC295ACA540060996F /* Manager.swift */,
-				D7CE8A3929587B5F00E9BA74 /* RealmManager.swift */,
 				D7D52868295A23CC00A8FCBF /* String+Frases.swift */,
 				D7CE8A3829587B4E00E9BA74 /* Extension */,
 			);
@@ -144,6 +151,7 @@
 		D7DD3E57295874CB000900FA /* Simplenote */ = {
 			isa = PBXGroup;
 			children = (
+				D787FFB9295AF39F00F3B94C /* Managers */,
 				D7CE8A3729587B4500E9BA74 /* Helpers */,
 				D7CE8A4229587BB100E9BA74 /* Models */,
 				D7DD3E70295879D4000900FA /* Controllers */,
@@ -309,7 +317,7 @@
 				D75B67B9295892D8003A4E30 /* EditingVC.swift in Sources */,
 				D7CE8A4429587BC000E9BA74 /* Note.swift in Sources */,
 				D7CE8A3F29587B9100E9BA74 /* UIColor+Extension.swift in Sources */,
-				D742B9FD295ACA540060996F /* Manager.swift in Sources */,
+				D742B9FD295ACA540060996F /* AppManager.swift in Sources */,
 				D7CE8A4729587BE500E9BA74 /* NoteTableViewCell.swift in Sources */,
 				D7CE8A3C29587B7B00E9BA74 /* UIView+Extension.swift in Sources */,
 				D7DD3E5B295874CB000900FA /* SceneDelegate.swift in Sources */,

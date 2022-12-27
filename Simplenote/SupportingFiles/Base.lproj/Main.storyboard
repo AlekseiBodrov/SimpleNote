@@ -56,19 +56,34 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="myz-pt-2zd">
-                                <rect key="frame" x="0.0" y="47" width="390" height="797"/>
+                                <rect key="frame" x="0.0" y="87" width="390" height="757"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="M5F-PX-NK7">
+                                <rect key="frame" x="0.0" y="47" width="390" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Mgv-Wg-pvf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="rfN-Qt-VCZ" eventType="editingChanged" id="YdR-bM-oK0"/>
+                                    <outlet property="delegate" destination="rfN-Qt-VCZ" id="sLw-sw-yXY"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="F1U-Gg-4yn"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="myz-pt-2zd" firstAttribute="top" secondItem="F1U-Gg-4yn" secondAttribute="top" id="9v3-Z1-GIa"/>
+                            <constraint firstItem="M5F-PX-NK7" firstAttribute="leading" secondItem="F1U-Gg-4yn" secondAttribute="leading" id="2sA-Qd-bXO"/>
+                            <constraint firstItem="myz-pt-2zd" firstAttribute="top" secondItem="M5F-PX-NK7" secondAttribute="bottom" id="9v3-Z1-GIa"/>
                             <constraint firstItem="myz-pt-2zd" firstAttribute="leading" secondItem="F1U-Gg-4yn" secondAttribute="leading" id="Gjm-Zt-uQQ"/>
+                            <constraint firstItem="F1U-Gg-4yn" firstAttribute="trailing" secondItem="M5F-PX-NK7" secondAttribute="trailing" id="LLC-yC-Vev"/>
+                            <constraint firstItem="M5F-PX-NK7" firstAttribute="top" secondItem="F1U-Gg-4yn" secondAttribute="top" id="Mvc-AY-fua"/>
                             <constraint firstItem="F1U-Gg-4yn" firstAttribute="trailing" secondItem="myz-pt-2zd" secondAttribute="trailing" id="hFu-GX-BYh"/>
                             <constraint firstAttribute="bottom" secondItem="myz-pt-2zd" secondAttribute="bottom" id="y5J-wZ-y7w"/>
                         </constraints>
@@ -85,11 +100,12 @@
                         <outlet property="backBarButton" destination="cyY-bG-tLh" id="S77-oq-9IB"/>
                         <outlet property="rightBarButton" destination="Qs4-Lt-DbO" id="pax-9G-YWa"/>
                         <outlet property="textView" destination="myz-pt-2zd" id="fIU-PT-HaA"/>
+                        <outlet property="titleTextField" destination="M5F-PX-NK7" id="8la-Je-EQf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3an-vd-uak" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2611" y="-2"/>
+            <point key="canvasLocation" x="2609.2307692307691" y="-2.1327014218009479"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wt9-gS-QBD">
