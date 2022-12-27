@@ -1,11 +1,19 @@
 import UIKit
+import RealmSwift
+
+protocol EditingVCDelegate: AnyObject {
+    func save()
+}
 
 class EditingVC: UIViewController {
     //MARK: - static let
     static let identifier = "EditingVC"
 
+    var titleNote: String = ""
+    var contentNote: String = ""
     var indexPath: IndexPath?
-    var isOldNote = false
+
+    weak var delegate: EditingVCDelegate?
 
     //MARK: - IBOutlet
     @IBOutlet weak var textView: UITextView!
@@ -22,10 +30,16 @@ class EditingVC: UIViewController {
         registerRecognizer(with: .up)
         registerRecognizer(with: .down)
 
-//        getTextForNote()
+        getTextForNote()
     }
 
     deinit {
+
+        let note = Item()
+        note.content = contentNote
+        RealmManager.shared.saveItem(with: note)
+        delegate?.save()
+
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -36,14 +50,14 @@ class EditingVC: UIViewController {
     }
 
     //MARK: - flow funcs
-
-    func getTextForNote(note: Item) {
+    func getTextForNote() {
         print(#function)
-        if isOldNote, indexPath != nil {
-//            let note = note
-//            textView.attributedText = note.content
+        if let indexPath = self.indexPath {
+            let notesArray: Results<Item> = RealmManager.shared.fetchData()
+            let note = notesArray[indexPath.row]
+            configureText(with: note.content!)
         } else {
-            textView.text = ""
+            configureText(with: Frase.newNote.rawValue.lacolized(), color: .lightGray)
             addAttributesInTextView()
         }
     }
@@ -58,22 +72,30 @@ class EditingVC: UIViewController {
         let boldFont = UIFont(descriptor: boldFontDescriptor!, size: 24)
         let normalFont = UIFont(descriptor: fontDescriptor, size: 20)
 
-        //Нужно для определения длинны первого параграфа и остальных параграфов
         let firstParagraph = textStorage.mutableString.paragraphRange(for: NSRange(location: 0, length: 0))
         let otherParagraphs = NSString(string: getNoteContent(text: textView.text))
 
         let titleNoteParagraphStyle = NSMutableParagraphStyle()
         let contentNoteParagraphsStyle = NSMutableParagraphStyle()
 
-        //Атрибуты заголовка заметки (Первый абзац)
         textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: titleNoteParagraphStyle, range: firstParagraph)
         textStorage.addAttribute(NSAttributedString.Key.font, value: boldFont, range: firstParagraph)
 
-        //Атрибуты содержания заметки (Текст начиная со второго абзаца)
         if textView.text.contains("\n") {
             textStorage.addAttribute(NSAttributedString.Key.paragraphStyle, value: contentNoteParagraphsStyle, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
             textStorage.addAttribute(NSAttributedString.Key.font, value: normalFont, range: NSRange(location: firstParagraph.length - 1, length: otherParagraphs.length + 1))
         }
+    }
+
+    private func getNoteTitle(text: String) -> String {
+        print(#function)
+        var firstParagraph: String
+        if let endIndexOfFirstParagraph = text.firstIndex(of: "\n") {
+            firstParagraph = String(text[..<endIndexOfFirstParagraph])
+        } else {
+            firstParagraph = text
+        }
+        return firstParagraph
     }
 
     private func getNoteContent(text: String) -> String {
@@ -90,6 +112,21 @@ class EditingVC: UIViewController {
 
 }
 
+extension EditingVC: UITextViewDelegate {
+
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        print(#function)
+        if contentNote.isEmpty {
+            configureText(with: "")
+        }
+        return true
+    }
+
+    func textViewDidChange(_ textView: UITextView) {
+        contentNote = textView.text
+    }
+}
+
 
 private extension EditingVC {
 
@@ -97,11 +134,13 @@ private extension EditingVC {
         view.backgroundColor = .darkGray
         textView.backgroundColor = .darkGray
         textView.textColor = .white
+
+        textView.delegate = self
     }
 
     func configureBarButtons() {
-        rightBarButton.title = "Done".lacolized()
-        backBarButton.title = "Back".lacolized()
+        rightBarButton.title = Frase.done.rawValue.lacolized()
+        backBarButton.title = Frase.back.rawValue.lacolized()
     }
 
     func registerRecognizer(with direction: UISwipeGestureRecognizer.Direction) {
@@ -132,5 +171,10 @@ private extension EditingVC {
             textView.scrollIndicatorInsets = textView.contentInset
         }
         textView.scrollRangeToVisible(textView.selectedRange)
+    }
+
+    func configureText(with text: String, color: UIColor = UIColor.white) {
+        textView.text = text
+        textView.textColor = color
     }
 }

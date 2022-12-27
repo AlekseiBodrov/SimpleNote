@@ -19,7 +19,7 @@ final class NoteTableViewCell: UITableViewCell {
     func configure(with item: Item){
 //        configureIcon(with: item.icon)
 //        configureTitileLabel(with: item.title)
-//        configureContentLabel(with: item.content)
+        configureContentLabel(with: item.content!)
         configureDateLabel(with: item.date ?? "")
         configureStackView()
         configurContentView()

@@ -8,8 +8,8 @@ import UIKit
          static let rowHeight: CGFloat = 60
      }
 
-     private let firstNote = Item().prepareForFirstUse()
-     private var notesArray: Results<Item> = RealmManager.shared.fetchData()
+     private let firstNote = Manager.firstNote
+     private var notesArray: Results<Item> = Manager.notesArray
 
     //MARK: - IBOutlet
     @IBOutlet weak var listOfNotesTableView: UITableView!
@@ -28,10 +28,7 @@ import UIKit
 
      //MARK: - IBOutlet
       @IBAction func rightBarButtonPressed(_ sender: UIBarButtonItem) {
-          let item = Item().prepareForFirstUse()
-
-          RealmManager.shared.saveItem(with: item)
-          createViewController(with: nil)
+          createViewController()
       }
  }
 
@@ -44,7 +41,7 @@ import UIKit
 
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
          tableView.deselectRow(at: indexPath, animated: true)
-         createViewController(with: indexPath)
+         createViewController(indexPath)
      }
 
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -77,9 +74,10 @@ private extension OverviewListVC {
         listOfNotesTableView.register(nib, forCellReuseIdentifier: NoteTableViewCell.identifier)
     }
 
-    func createViewController(with indexPath: IndexPath?) {
+    func createViewController(_ indexPath: IndexPath? = nil) {
         guard let controller = self.storyboard?.instantiateViewController(withIdentifier: EditingVC.identifier) as? EditingVC else { return }
         controller.indexPath = indexPath
+        controller.delegate = self
         self.navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -92,12 +90,18 @@ private extension OverviewListVC {
     }
 
     func deleteCell(indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let title = "Delete".lacolized()
+        let title = Frase.delete.rawValue.lacolized()
         let actionDelete = UIContextualAction(style: .destructive, title: title) { [self] _, _, _ in
             RealmManager.shared.deletItem(with: notesArray[indexPath.row])
             listOfNotesTableView.deleteRows(at: [indexPath], with: .automatic)
         }
         let actions = UISwipeActionsConfiguration(actions: [actionDelete])
         return actions
+    }
+}
+
+extension OverviewListVC: EditingVCDelegate {
+    func save() {
+        listOfNotesTableView.reloadData()
     }
 }

@@ -17,6 +17,7 @@ extension Item {
 //            NSAttributedString.Key.foregroundColor: UIColor.white
 //        ]
 //        item.content = NSMutableAttributedString(string: string, attributes: attributes)
+        item.content = Frase.additionalText.rawValue.lacolized()
         let date = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm dd.MM.yy"
